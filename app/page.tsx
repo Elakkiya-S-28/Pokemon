@@ -1,5 +1,5 @@
-import { MainScreen } from "@/src/Container/pages";
-import Image from "next/image";
+import { MainScreen } from "@/src/Container/MainScreen/pages";
+
 
 export default function Home() {
   return (
