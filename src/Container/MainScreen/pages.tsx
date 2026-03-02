@@ -1,35 +1,53 @@
 'use client';
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Beaker, Zap, BarChart2, Library } from 'lucide-react';
+import { Home, Beaker, Zap, BarChart2, Library, Swords } from 'lucide-react';
 import { WalkingSprite, GrassBlade } from './helper';
 import { WildScene } from '../Wild/pages';
 import { CollectionView } from '../Collection/pages';
 import { AnalyzeView } from '../Analyze/pages';
+import { NavItem } from '@/src/Component/MainScreen/pages';
+import { LabScene } from '../Lab/pages';
+import { BattleScene } from '../BattleScene/pages';
+
+
+export interface Pokemon {
+    name: string;
+    sprite: string;
+    id: number;
+    stats: { base_stat: number; stat: { name: string } }[];
+    types: { type: { name: string } }[];
+    abilities: { ability: { name: string } }[];
+    height: number;
+    weight: number;
+}
 
 
 export const MainScreen = () => {
     const [activeTab, setActiveTab] = useState('Home');
-    const [collection, setCollection] = useState<any[]>([]); // State to hold caught Pokémon
-    const [analyzingPoke, setAnalyzingPoke] = useState<any>(null); // State for the current analysis subject
+    const [collection, setCollection] = useState<any[]>([]);
+    const [analyzingPoke, setAnalyzingPoke] = useState<any>(null);
 
-    const handleCatch = (pokemon: any) => {
-        setCollection(prev => [pokemon, ...prev]);
-        setAnalyzingPoke(pokemon); // This makes Analyze work!
-        setActiveTab('Analyze');    // Automatically switch tabs
+
+    const removeItemFromCollection = (uniqueId: number, index: number) => {
+        setCollection(prev => prev.filter((_, i) => i !== index));
+        if (analyzingPoke && collection[index]?.id === analyzingPoke.id) {
+            setAnalyzingPoke(null);
+        }
     };
 
+
     const addPokemonToCollection = (pokemon: any) => {
-        setCollection(prev => [...prev, pokemon]);
+        setCollection(prev => [...pokemon, ...prev]);
+        setAnalyzingPoke(pokemon[0]);
     };
 
     const grassBlades = useMemo(() => Array.from({ length: 120 }), []);
 
-    // Tab content mapping
     const renderContent = () => {
         switch (activeTab) {
-            case 'Wild': return <WildScene onCatch={addPokemonToCollection} />;
-            case 'Lab': return <Placeholder title="DNA SEQUENCER" subtitle="Analyzing Genetic Material..." />;
+            case 'Wild': return <WildScene onConfirmCatch={addPokemonToCollection} />;
+            case 'Lab': return <LabScene capturedPokemon={collection} />;
             case 'Analyze': return <AnalyzeView pokemon={analyzingPoke} />;
             case 'Collection': return <CollectionView
                 items={collection}
@@ -37,7 +55,9 @@ export const MainScreen = () => {
                     setAnalyzingPoke(p);
                     setActiveTab('Analyze');
                 }}
+                onRemove={removeItemFromCollection}
             />;
+            case 'Battle': return <BattleScene collection={collection} />;
             default: return (
                 <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
                     <motion.h1
@@ -72,6 +92,7 @@ export const MainScreen = () => {
                     <NavItem icon={<Zap size={18} />} label="Wild" active={activeTab === 'Wild'} onClick={() => setActiveTab('Wild')} />
                     <NavItem icon={<BarChart2 size={18} />} label="Analyze" active={activeTab === 'Analyze'} onClick={() => setActiveTab('Analyze')} />
                     <NavItem icon={<Library size={18} />} label="Collection" active={activeTab === 'Collection'} onClick={() => setActiveTab('Collection')} />
+                    <NavItem icon={<Swords size={18} />} label="Battle" active={activeTab === 'Battle'} onClick={() => setActiveTab('Battle')} />
                 </div>
 
                 <div className="text-[10px] tracking-[0.2em] text-green-400 font-mono flex items-center gap-2">
@@ -112,19 +133,3 @@ export const MainScreen = () => {
     );
 };
 
-const NavItem = ({ icon, label, active, onClick }: { icon: any, label: string, active: boolean, onClick: () => void }) => (
-    <button
-        onClick={onClick}
-        className={`flex items-center gap-2 px-6 py-2 rounded-full transition-all ${active ? 'bg-purple-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-    >
-        {icon}
-        <span className="text-[10px] font-bold tracking-widest uppercase">{label}</span>
-    </button>
-);
-
-const Placeholder = ({ title, subtitle }: { title: string, subtitle: string }) => (
-    <div className="flex-1 flex flex-col items-center justify-center border border-white/5 m-12 rounded-3xl bg-black/20 backdrop-blur-sm">
-        <h2 className="text-4xl font-bold tracking-tighter mb-2">{title}</h2>
-        <p className="text-purple-400 font-mono text-sm animate-pulse">{subtitle}</p>
-    </div>
-);

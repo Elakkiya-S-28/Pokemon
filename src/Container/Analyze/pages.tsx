@@ -1,7 +1,7 @@
 'use client';
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Shield, Zap, Heart, Sword, Wind } from 'lucide-react';
+import { AttributeBox, StatBar } from '@/src/Component/MainScreen/pages';
 
 const STAT_ICONS: Record<string, any> = {
     hp: <Heart size={14} />,
@@ -115,34 +115,3 @@ export const AnalyzeView = ({ pokemon }: { pokemon: any }) => {
         </div>
     );
 };
-
-const StatBar = ({ label, value, icon }: { label: string, value: number, icon: any }) => {
-    const percentage = Math.min((value / 255) * 100, 100);
-
-    return (
-        <div className="space-y-1">
-            <div className="flex justify-between items-center text-[10px] font-mono tracking-widest uppercase">
-                <div className="flex items-center gap-2 text-white/60">
-                    {icon}
-                    <span>{label.replace('-', ' ')}</span>
-                </div>
-                <span className="text-white font-bold">{value}</span>
-            </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${percentage}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className={`h-full ${percentage > 50 ? 'bg-green-400' : 'bg-orange-400'} shadow-[0_0_10px_rgba(74,222,128,0.5)]`}
-                />
-            </div>
-        </div>
-    );
-};
-
-const AttributeBox = ({ label, value }: { label: string, value: string }) => (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-        <p className="text-[9px] tracking-[0.2em] text-white/30 mb-1">{label}</p>
-        <p className="text-sm font-bold font-mono">{value}</p>
-    </div>
-);
