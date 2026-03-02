@@ -64,7 +64,7 @@ export const MainScreen = () => {
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         className="text-6xl md:text-9xl font-extralight tracking-[0.4em] leading-tight mb-4"
                     >
-                        POKÉMON DNA <br /> <span className="font-bold">LAB</span>
+                        POKÉMON <br /> <span className="font-bold"></span>
                     </motion.h1>
                     <p className="text-xs md:text-sm tracking-[0.8em] text-white/40 uppercase font-light">
                         Where Legends Evolve
@@ -83,7 +83,7 @@ export const MainScreen = () => {
             <nav className="relative z-[100] flex items-center justify-between px-12 py-8 w-full">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600" />
-                    <span className="text-xl font-bold tracking-[0.2em]">DNA LAB</span>
+                    <span className="text-xl font-bold tracking-[0.2em]">Pokemon</span>
                 </div>
 
                 <div className="hidden md:flex items-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-full p-1">
